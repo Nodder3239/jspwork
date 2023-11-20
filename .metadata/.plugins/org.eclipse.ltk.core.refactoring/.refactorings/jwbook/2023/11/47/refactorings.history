@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;jwbook/src/main/webapp/resources/images/1.jpg&apos; to &apos;time.jpg&apos;" description="Rename resource &apos;1.jpg&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/webapp/resources/images/1.jpg" name="time.jpg" stamp="1700449132680" updateReferences="true"/>
+</session>
