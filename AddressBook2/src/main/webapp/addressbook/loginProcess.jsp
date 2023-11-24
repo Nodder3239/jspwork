@@ -7,8 +7,14 @@
 	boolean result = abDAO.checkLogin(email);
 	
 	if(result){
+		out.println("<script>");
+		out.println("alert('로그인 되었습니다.')");
+		out.println("location.href='addrList.jsp'");
+		out.println("</script>");
+		//이메일이 있으면 세션 발급
 		session.setAttribute("sessionId", email);
-		response.sendRedirect("addrList.jsp");	//주소록 목록으로 이동
+		//response.sendRedirect("addrList.jsp");	//주소록 목록으로 이동
+
 	}else{
 		out.println("<script>");
 		out.println("alert('아이디나 비밀번호가 일치하지 않습니다.')");

@@ -37,7 +37,7 @@ public class AddrBookDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, pstmt, rs);
+			JDBCUtil.close(conn, pstmt);
 		}
 	}
 	
@@ -128,40 +128,48 @@ public class AddrBookDAO {
 	
 	
 	
-	//삭제
+	//주소 삭제
 	public void deleteAddrBook(int bnum) {
+		//db연결
 		conn = JDBCUtil.getConnection();
 		
 		try {
+			//sql 처리
 			String sql = "DELETE FROM addrbook WHERE bnum = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bnum);
+			//sql 실행
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {		//db종료
-			JDBCUtil.close(conn, pstmt, rs);
+			JDBCUtil.close(conn, pstmt);
 		}
 
 		
 	}
 	
-	//수정
+	//주소 수정
 	public void updateAddrBook(AddrBook addrBook) {
+		//db연결
 		conn = JDBCUtil.getConnection();
 		try {
-			String sql = "UPDATE boards set username = ?"
-					+ ", tel = ?, email = ?, gender = ? ";
+			//sql 처리
+			String sql = "UPDATE addrbook SET username = ?"
+					+ ", tel = ?, email = ?, gender = ? WHERE bnum = ?";
 			pstmt = conn.prepareStatement(sql);
+			//폼에 입력된 데이터를 가져와서 db에 저장
 			pstmt.setString(1, addrBook.getUsername());
 			pstmt.setString(2, addrBook.getTel());
 			pstmt.setString(3, addrBook.getEmail());
 			pstmt.setString(4, addrBook.getGender());
+			pstmt.setInt(5, addrBook.getBnum());
+			//sql 실행
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {		//db종료
-			JDBCUtil.close(conn, pstmt, rs);
+			JDBCUtil.close(conn, pstmt);
 		}
 	}
 	

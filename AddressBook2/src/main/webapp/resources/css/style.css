@@ -19,6 +19,7 @@ a{text-decoration: none;}
 #tbl_reg select{padding: 5px;}
 
 /* 목록 스타일 */
+.accent{color: blue;}
 #tbl_list{width: 800px; margin: 0 auto;}
 #tbl_list, th, td{
 	border: 1px solid #ccc; 

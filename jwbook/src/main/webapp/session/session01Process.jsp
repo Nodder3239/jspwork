@@ -9,6 +9,7 @@
 		//로그인이 성공하면 세션을 발급함(세션 이름 - "userID")
 		session.setAttribute("userID", userId);
 		out.println("세션이 발급되었습니다.");
+		session.setMaxInactiveInterval(2*60);
 	}else{
 		out.println("<script>");
 		out.println("alert('아이디나 비밀번호가 일치하지 않습니다.')");

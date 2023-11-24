@@ -10,12 +10,26 @@
 </head>
 <body>
 	<jsp:useBean id="abDAO" class="addressbook.AddrBookDAO" scope="application"/>
+	<%
+		//로그인이 안 된 경우 로그인 하도록 알림창 띄움
+		String sessionId = null;
+		if(session.getAttribute("sessionId") != null){
+			sessionId = (String) session.getAttribute("sessionId");
+		}else{
+			out.println("<script>");
+			out.println("alert('로그인을 해주세요.')");
+			out.println("location.href='loginForm.jsp'");
+			out.println("</script>");
+		}
+		
+	%>	
 	<div id="container">
 		<h2>주소 목록</h2>
 		<hr>
 		<p>
-			<a href="addrForm.jsp">[주소추가]</a>&nbsp;&nbsp;
-			<a href="logout.jsp">[로그아웃]</a>
+			<a href="logout.jsp">
+				<span class="accent">(<%=sessionId %> 님)</span>[로그 아웃]
+			</a>
 		</p>
 		
 		<table id="tbl_list">
