@@ -5,14 +5,17 @@
 <%
 	String email = request.getParameter("email");
 	boolean result = abDAO.checkLogin(email);
+	String name = abDAO.getNameByEmail(email);
 	
 	if(result){
 		out.println("<script>");
 		out.println("alert('로그인 되었습니다.')");
 		out.println("location.href='addrList.jsp'");
 		out.println("</script>");
-		//이메일이 있으면 세션 발급
+		//이메일이 있으면 세션 발급(세션이름 - sessionId)
 		session.setAttribute("sessionId", email);
+		//이름 세션 발급
+		session.setAttribute("sessionName", name);
 		//response.sendRedirect("addrList.jsp");	//주소록 목록으로 이동
 
 	}else{

@@ -28,7 +28,7 @@
 		<hr>
 		<p>
 			<a href="logout.jsp">
-				<span class="accent">(<%=sessionId %> 님)</span>[로그 아웃]
+				<span class="accent">(<%=session.getAttribute("sessionName") %> 님)</span>[로그 아웃]
 			</a>
 		</p>
 		
