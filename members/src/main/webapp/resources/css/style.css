@@ -31,6 +31,7 @@ footer{height: 80px; border-top: 2px solid #222;}
 
 /* 회원 목록 스타일 */
 #memberlist{width: 800px; margin: 20px auto;}
+#memberlist .logout{text-align: right;}
 #memberlist table{width: 800px; margin: 20px auto;}
 #memberlist table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
@@ -45,5 +46,34 @@ form .button button{padding: 5px;}
 form label{width: 120px; float: left; padding-left: 20px;}
 form input{padding: 5px;}
 
+/* 회원 정보 스타일 */
+#memberview{width: 460px; margin: 20px auto;}
+#memberview table{width: 460px; margin: 20px auto;}
+#memberview table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+table th, td{padding: 10px;}
+#memberview button{padding: 5px;}
 
+/* login 스타일 */
+#login {width: 400px; margin: 30px auto 100px;}
+#login form{margin: 30px auto;}
+#login form ul li{margin: 30px;}
+#login .error{color: #b00; margin-top: 16px; font-size: 0.9em;}
+#login button{width: 100%; padding: 10px 0;} 
 
+/* 게시글 목록 스타일 */
+#boardlist{width: 800px; margin: 20px auto;}
+#boardlist table{width: 800px; margin: 20px auto;}
+#boardlist table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+table th, td{padding: 10px;}
+table thead{background: #eee;}
+#boardlist button{padding: 10px;}
+
+/* 글쓰기 스타일 */
+#writeform{width: 550px; margin: 20px auto;}
+#writeform table{width: 550px; margin: 20px auto;}
+#writeform table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+table th, td{padding: 10px;}
+table thead{background: #eee;}
+#writeform input{width: 540px; height: 25px; padding: 5px}
+#writeform textarea{width: 540px; height: 300px; padding: 5px;}
+#writeform button{padding: 10px;}

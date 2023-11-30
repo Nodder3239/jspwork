@@ -17,30 +17,30 @@ public class BoardDAO {
 
 
 	//게시판 목록 보기
-	public List<Board> getStudentList() {
+	public List<Board> getBoardList() {
 		conn = JDBCUtil.getConnection();
-		List<Board> boards = new ArrayList<>();
+		List<Board> boardList = new ArrayList<>();
 		
 		try {
 			String sql = "SELECT * FROM board ORDER BY boardNo";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				Board s = new Board();
-				s.setBoardNo(rs.getInt("sid"));
-				s.setUsername(rs.getString("username"));
-				s.setbTitle(rs.getString("bTitle"));
-				s.setbOption(rs.getInt("bOption"));
-				s.setbWDate(rs.getTimestamp("bWDate"));
-				s.setbWTime(rs.getTimestamp("bWTime"));
+				Board b = new Board();
+				b.setBoardNo(rs.getInt("sid"));
+				b.setUsername(rs.getString("username"));
+				b.setbTitle(rs.getString("bTitle"));
+				b.setbOption(rs.getInt("bOption"));
+				b.setbWDate(rs.getTimestamp("bWDate"));
+				b.setbWTime(rs.getTimestamp("bWTime"));
 				
-				boards.add(s);	//어레이리스트에 객체 1명 저장
+				boardList.add(b);	//어레이리스트에 객체 1명 저장
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn, pstmt, rs);
 		}
-		return boards;
+		return boardList;
 	}
 }

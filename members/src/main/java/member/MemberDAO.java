@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import common.JDBCUtil;
 
 //회원을 추가, 검색, 수정, 삭제할 클래스
@@ -70,4 +71,60 @@ public class MemberDAO {
 			JDBCUtil.close(conn, pstmt);
 		}
 	}
-}
+	
+	//회원 정보(상세보기)
+	public Member getMember(String id) {
+		//db 연결
+		conn = JDBCUtil.getConnection();
+		Member m = new Member();	//빈 객체 생성
+		//sql 처리
+		try {
+			String sql = "SELECT * FROM member WHERE id = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			//id에 일치하는 1개의 주소 가져옴
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				//db에 있는 주소를 가져와서 주소객체에 저장(화면 목록)
+				m.setId(rs.getString("id"));
+				m.setPasswd(rs.getString("passwd"));
+				m.setName(rs.getString("name"));
+				m.setEmail(rs.getString("email"));
+				m.setGender(rs.getString("gender"));
+				m.setJoinDate(rs.getTimestamp("joindate"));
+				
+				
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		return m;
+	}
+	
+	//로그인 체크
+	public boolean checkLogin(Member m) {
+		conn = JDBCUtil.getConnection();
+		
+		try {
+			String sql = "SELECT * FROM member "
+					+ "WHERE id = ? AND passwd = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, m.getId());
+			pstmt.setString(2, m.getPasswd());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {	//검색한 아이디가 있으면
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		return false;
+	}
+	
+	
+} //DAO 클래스 닫기

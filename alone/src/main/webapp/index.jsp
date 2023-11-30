@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	 <a href="/board/boardlist.jsp">게시판 가기</a>
 </body>
 </html>
