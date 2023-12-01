@@ -16,16 +16,20 @@ import board.Board;
 import board.BoardDAO;
 import member.Member;
 import member.MemberDAO;
+import reply.Reply;
+import reply.ReplyDAO;
 
 @WebServlet("*.do")	// "/" 이하의 경로에서 do로 끝나는 확장자는 모두 허용
 public class MainController extends HttpServlet {
 	private static final long serialVersionUID = 10L;
 	MemberDAO mDAO;
 	BoardDAO bDAO;
+	ReplyDAO rDAO;
        
-    public MainController() {
+    public MainController() {	//생성자
         mDAO = new MemberDAO();
         bDAO = new BoardDAO();
+        rDAO = new ReplyDAO();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -159,20 +163,86 @@ public class MainController extends HttpServlet {
 			b.setId(id);
 			
 			bDAO.write(b);
-						
+					
 		}else if(command.equals("/boardview.do")){
+			//글 제목에서 요청한 글 번호 받기
 			int bno = Integer.parseInt(request.getParameter("bno"));
+			
+			//글 상세보기 처리
 			Board board = bDAO.getBoard(bno);
 			
-			//모델 생성
+			//댓글 목록 보기
+			List<Reply> replyList = rDAO.getReplyList(bno);
+			
+			//모델 생성해서 뷰로 보내기
 			request.setAttribute("board", board);
+			request.setAttribute("replyList", replyList);
+			
 			nextPage="/board/boardview.jsp";
+		}else if(command.equals("/deleteboard.do")) {
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			
+			bDAO.deleteboard(bno);
+			
+			nextPage="/boardlist.do";
+		}else if(command.equals("/updateboardform.do")) {
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			
+			//글 상세보기 처리
+			Board board = bDAO.getBoard(bno);
+			
+			//모델 생성해서 뷰로 보내기
+			request.setAttribute("board", board);
+			
+			
+			nextPage="/board/updateboardform.jsp";
+		}else if(command.equals("/updateboard.do")) {
+			//게시글 제목, 내용을 파라미터로 받음
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+				
+			//db에 저장
+			Board b = new Board();
+			b.setTitle(title);
+			b.setContent(content);
+			b.setBno(bno);
+			
+			bDAO.updateboard(b);
+			
+			
+			//nextPage="/boardlist.do";
 		}
 		
-		
-		
-		if(command.equals("/writer.do")) { 
+		//댓글 구현
+		if(command.equals("/insertreply.do")) {
+			//댓글 폼 데이터 받기
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			String rcontent = request.getParameter("rcontent");
+			String replyer = request.getParameter("replyer");
+			
+			//댓글 등록 처리
+			Reply r = new Reply();
+			r.setBno(bno);
+			r.setRcontent(rcontent);
+			r.setReplyer(replyer);
+			
+			rDAO.insertreply(r);
+			
+		}
+		if(command.equals("/deletereply.do")) {
+			int rno = Integer.parseInt(request.getParameter("rno"));
+			//삭제 처리 메서드 호출
+			rDAO.deletereply(rno);		
+		}
+
+		//redirect와 forward 구분하기
+		//새로고침하면 게시글, 댓글 중복 생성 문제 해결
+		if(command.equals("/write.do") || command.equals("/updateboard.do")) { 
 			response.sendRedirect("boardlist.do");
+		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do")) {
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			response.sendRedirect("boardview.do?bno=" + bno);
 		}else{
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 			dispatch.forward(request, response);

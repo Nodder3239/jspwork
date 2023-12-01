@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,23 +67,34 @@ public class BoardDAO {
 	}
 	
 	
-	
+	//게시글 상세보기
 	public Board getBoard(int bno) {
-		//db 연결
-		conn = JDBCUtil.getConnection();
 		Board b = new Board();	//빈 객체 생성
-		//sql 처리
 		try {
+			//db 연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리
 			String sql = "SELECT * FROM board WHERE bno = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bno);
 			//id에 일치하는 1개의 주소 가져옴
 			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				//db에 있는 주소를 가져와서 주소객체에 저장(화면 목록)
-				b.setId(rs.getString("id"));
+			
+			if(rs.next()) { //검색 결과가 있으면
+				b.setBno(rs.getInt("bno"));
 				b.setTitle(rs.getString("title"));
 				b.setContent(rs.getString("content"));
+				b.setCreateDate(rs.getTimestamp("createdate"));
+				b.setModifyDate(rs.getTimestamp("modifydate"));
+				b.setHit(rs.getInt("hit"));
+				b.setFilename(rs.getString("filename"));
+				b.setId(rs.getString("id"));
+				
+				//조회수 1증가
+				sql = "UPDATE board SET hit = hit + 1 WHERE bno = ?";
+				pstmt = conn.prepareStatement(sql);	
+				pstmt.setInt(1, bno);
+				pstmt.executeUpdate();	//실행
 
 			}
 		} catch (SQLException e) {
@@ -90,7 +102,52 @@ public class BoardDAO {
 		} finally {		//db종료
 			JDBCUtil.close(conn, pstmt, rs);
 		}
+		
 		return b;
+		
+	}
+
+	//삭제
+	public void deleteboard(int bno) {
+		try {
+			//db연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리
+			String sql = "DELETE FROM board WHERE bno = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			//sql 실행
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt);
+		}	
+	}
+	
+	public void updateboard(Board b) {
+		//현재 날짜와 시간 객체 생성
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		try {
+			//db연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리 : 수정일 처리는 현재 날짜와 시간을 입력함
+			String sql = "UPDATE board SET title = ?"
+					+ ", content = ?, modifydate= ? WHERE bno = ?";
+			pstmt = conn.prepareStatement(sql);
+			//폼에 입력된 데이터를 가져와서 db에 저장
+			pstmt.setString(1, b.getTitle());
+			pstmt.setString(2, b.getContent());
+			pstmt.setTimestamp(3, now);
+			pstmt.setInt(4, b.getBno());
+
+			//sql 실행
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt);
+		}
 	}
 	
 }

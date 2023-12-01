@@ -1,15 +1,14 @@
 @charset "UTF-8";
-
-/* 공통 스타일*/
-*{margin: 0; padding:0;}
-#container{width:90%; margin:30px auto 100px;}
+/* 공통 스타일 */
+*{margin: 0; padding: 0;}
+#container{width: 90%; margin: 30px auto 100px;}
 ul li{list-style: none;}
 a{text-decoration: none;}
 
 /* header 스타일 */
-header{height: 80px; background: #0077CC;}
-header #logo{width: 20%; float: left;}
-#logo h1 a{color: greenyellow; padding-left: 24px; line-height: 80px; font-style: italic;}
+header{height: 80px; background: #0077cc;}
+header #logo{width: 20%; float: left; line-height: 80px;}
+#logo h1 a{color: greenyellow; padding-left: 24px; font-style: italic;}
 #logo h1 a:hover{color: #eee;}
 header nav{width: 70%; float: right;}
 #topMenu{line-height: 80px;}
@@ -20,7 +19,8 @@ header nav{width: 70%; float: right;}
 /* footer 스타일 */
 footer{height: 80px; border-top: 2px solid #222;}
 #bottomMenu{margin: 10px 20px;}
-#bottomMenu li{float: left; margin: 10px 0; padding: 0 10px; border-right: 1.5px solid #ccc;}
+#bottomMenu li{float: left; margin: 10px 0; padding: 0 10px;
+	border-right: 1.5px solid #ccc;}
 #bottomMenu li a{color: #444;}
 #bottomMenu li:last-child{border: none;}
 
@@ -30,16 +30,17 @@ footer{height: 80px; border-top: 2px solid #222;}
 #main .main_img img{border-radius: 5px;}
 
 /* 회원 목록 스타일 */
-#memberlist{width: 800px; margin: 20px auto;}
+#memberlist{width: 700px; margin: 20px auto;}
 #memberlist .logout{text-align: right;}
-#memberlist table{width: 800px; margin: 20px auto;}
-#memberlist table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+#memberlist table{width: 700px; margin: 20px auto;}
+#memberlist table, th, td{border: 1px solid #ccc; 
+  border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
 table thead{background: #eee;}
 
 /* 회원 가입 스타일 */
 #join{width: 500px; margin: 20px auto;}
-#join form{margin:20px auto;}
+#join form{margin: 20px auto;}
 form ul li{margin: 20px;}
 form .button{margin-top: 16px;}
 form .button button{padding: 5px;}
@@ -49,7 +50,8 @@ form input{padding: 5px;}
 /* 회원 정보 스타일 */
 #memberview{width: 460px; margin: 20px auto;}
 #memberview table{width: 460px; margin: 20px auto;}
-#memberview table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+#memberview table, th, td{border: 1px solid #ccc; 
+  border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
 #memberview button{padding: 5px;}
 
@@ -57,23 +59,49 @@ table th, td{padding: 10px;}
 #login {width: 400px; margin: 30px auto 100px;}
 #login form{margin: 30px auto;}
 #login form ul li{margin: 30px;}
-#login .error{color: #b00; margin-top: 16px; font-size: 0.9em;}
-#login button{width: 100%; padding: 10px 0;} 
+#login .error{color: #e00; margin-top: 16px; font-size: 0.9em}
+#login button{width: 100%; padding: 10px 0;}
 
 /* 게시글 목록 스타일 */
-#boardlist{width: 800px; margin: 20px auto;}
-#boardlist table{width: 800px; margin: 20px auto;}
-#boardlist table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+#boardlist{width: 700px; margin: 20px auto;}
+#boardlist table{width: 700px; margin: 20px auto;}
+#boardlist table, th, td{border: 1px solid #ccc; 
+  border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
 table thead{background: #eee;}
 #boardlist button{padding: 10px;}
 
-/* 글쓰기 스타일 */
+/* 글쓰기 스타일*/
 #writeform{width: 550px; margin: 20px auto;}
 #writeform table{width: 550px; margin: 20px auto;}
-#writeform table, th, td{border: 1px solid #ccc; border-collapse: collapse; text-align: center;}
+#writeform table, th, td{border: 1px solid #ccc; 
+  border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
 table thead{background: #eee;}
-#writeform input{width: 540px; height: 25px; padding: 5px}
-#writeform textarea{width: 540px; height: 300px; padding: 5px;}
-#writeform button{padding: 10px;}
+#writeform input{width: 540px; height: 25px; padding: 5px;}
+#writeform textarea{width: 540px; height: 300px; padding: 5px; resize: none;}
+#writeform button{padding: 5px;}
+
+/* 글 상세보기 스타일 */
+#boardview{width: 550px; margin: 20px auto;}
+#boardview table{width: 550px; margin: 20px auto;}
+#boardview table, th, td{border: 1px solid #ccc; 
+  border-collapse: collapse; text-align: center;}
+table th, td{padding: 10px;}
+table thead{background: #eee;}
+#boardview input{width: 540px; height: 25px; padding: 5px;}
+#boardview textarea{width: 540px; height: 300px; padding: 5px; resize: none;}
+#boardview button{padding: 5px;}
+#writer{text-align: left;}
+
+/* 댓글 영역 스타일 */
+#boardview h3{margin-bottom:10px;}
+#boardview .reply{border-top: 1px dotted #ccc; margin: 10px;}
+#boardview .reply p{margin: 10px 0; font-size: 0.9em; color: #444;}
+#boardview .reply p:nth-of-type(1){white-space: pre-line;}
+#replyform textarea{height: 100px; resize: none;}
+.replylogin{background-color: #eee; margin: 10px 0; padding: 16px; text-align: center;}
+.replylogin a{color: blue;}
+.replylogin a:hover{text-decoration: underline;}
+button{float: right; margin: 0 10px;}
+#DR{font-size: 0.8em; margin: 10px 2.5px ; border-radius: 50%;}
