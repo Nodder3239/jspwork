@@ -56,7 +56,6 @@ form input{padding: 5px;}
 #memberview table{width: 460px; margin: 20px auto;}
 #memberview table, th, td{border: 1px solid #ccc; 
   border-collapse: collapse; text-align: center;}
-table th, td{padding: 10px;}
 #memberview button{padding: 5px;}
 
 /* login 스타일 */
@@ -68,11 +67,8 @@ table th, td{padding: 10px;}
 
 /* 게시글 목록 스타일 */
 #boardlist{width: 700px; margin: 20px auto;}
-#boardlist table{width: 700px; margin: 20px auto;}
-#boardlist table, th, td{border: 1px solid #ccc; 
-  border-collapse: collapse; text-align: center;}
-table th, td{padding: 10px;}
-table thead{background: #eee;}
+#boardlist table{width: 700px; margin: 20px auto; background-color: #EDEDED; border-radius: 20px;}
+#boardlist table, th, td{border-collapse: none; text-align: center;}
 #boardlist button{padding: 10px;}
 
 /* 글쓰기 스타일*/
@@ -81,7 +77,6 @@ table thead{background: #eee;}
 #writeform table, th, td{border: 1px solid #ccc; 
   border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
-table thead{background: #eee;}
 #writeform input{width: 540px; height: 25px; padding: 5px;}
 #writeform textarea{width: 540px; height: 300px; padding: 5px; resize: none;}
 #writeform button{padding: 5px;}
@@ -92,7 +87,6 @@ table thead{background: #eee;}
 #boardview table, th, td{border: 1px solid #ccc; 
   border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
-table thead{background: #eee;}
 #boardview input{width: 540px; height: 25px; padding: 5px;}
 #boardview textarea{width: 540px; height: 300px; padding: 5px; resize: none;}
 #boardview button{padding: 5px;}
@@ -109,3 +103,6 @@ table thead{background: #eee;}
 .replylogin a:hover{text-decoration: underline;}
 .btn{float: right; margin: 0 10px;}
 #DR{font-size: 0.5em; margin: 0px 2.5px ; border-radius: 50%; float: right;}
+
+
+/* only */

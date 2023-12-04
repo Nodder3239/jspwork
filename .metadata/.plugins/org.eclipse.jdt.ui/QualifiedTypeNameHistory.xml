@@ -15,4 +15,7 @@
     <fullyQualifiedTypeName name="member.Member"/>
     <fullyQualifiedTypeName name="java.io.Serializable"/>
     <fullyQualifiedTypeName name="java.sql.Timestamp"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="blike.Blike"/>
 </qualifiedTypeNameHistroy>

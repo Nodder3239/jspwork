@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import blike.Blike;
+import blike.BlikeDAO;
 import board.Board;
 import board.BoardDAO;
 import member.Member;
@@ -25,11 +27,13 @@ public class MainController extends HttpServlet {
 	MemberDAO mDAO;
 	BoardDAO bDAO;
 	ReplyDAO rDAO;
+	BlikeDAO lDAO;
        
     public MainController() {	//생성자
         mDAO = new MemberDAO();
         bDAO = new BoardDAO();
         rDAO = new ReplyDAO();
+        lDAO = new BlikeDAO();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -194,7 +198,8 @@ public class MainController extends HttpServlet {
 			request.setAttribute("board", board);
 			request.setAttribute("replyList", replyList);
 			
-			rDAO.updateReplyCount(bno);
+			
+			
 			
 			nextPage="/board/boardview.jsp";
 		}else if(command.equals("/deleteboard.do")) {
@@ -239,30 +244,50 @@ public class MainController extends HttpServlet {
 			String rcontent = request.getParameter("rcontent");
 			String replyer = request.getParameter("replyer");
 			
-			
 			//댓글 등록 처리
 			Reply r = new Reply();
 			r.setBno(bno);
 			r.setRcontent(rcontent);
 			r.setReplyer(replyer);
 			
+
 			rDAO.insertreply(r);
-			
-			
+			bDAO.updateReplyCount(bno);
+
 
 		}
 		if(command.equals("/deletereply.do")) {
 			int rno = Integer.parseInt(request.getParameter("rno"));
-
+			int bno = Integer.parseInt(request.getParameter("bno"));
 			//삭제 처리 메서드 호출
-			rDAO.deletereply(rno);		
+			rDAO.deletereply(rno);	
+			bDAO.updateReplyCount(bno);
+			
+			nextPage="/boardlist.do";
 		}
+		
+		if(command.equals("/like.do")) {
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			String id = request.getParameter("id");
+			
+			//댓글 등록 처리
+			Blike l = new Blike();
+			l.setBno(bno);
+			l.setId(id);
+
+			lDAO.like(l);
+			lDAO.updateLikeCount(bno);
+			
+		}
+		
+
+		
 
 		//redirect와 forward 구분하기
 		//새로고침하면 게시글, 댓글 중복 생성 문제 해결
 		if(command.equals("/write.do") || command.equals("/updateboard.do")) { 
 			response.sendRedirect("boardlist.do");
-		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do")) {
+		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/like.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			response.sendRedirect("boardview.do?bno=" + bno);
 		}else{

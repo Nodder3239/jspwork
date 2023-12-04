@@ -36,6 +36,7 @@ public class BoardDAO {
 				b.setFilename(rs.getString("filename"));
 				b.setId(rs.getString("id"));
 				b.setReply_count(rs.getInt("reply_count"));
+				b.setLike_count(rs.getInt("like_count"));
 				
 				boardList.add(b);	//어레이리스트에 객체 1명 저장
 			}
@@ -149,6 +150,25 @@ public class BoardDAO {
 			e.printStackTrace();
 		} finally {		//db종료
 			JDBCUtil.close(conn, pstmt);
+		}
+	}
+	
+	public void updateReplyCount(int bno){
+		try {
+			conn = JDBCUtil.getConnection();
+			String sql = "UPDATE board SET reply_count = "
+					+ "(SELECT count(rno) FROM reply WHERE bno = ?) WHERE bno = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			pstmt.setInt(2, bno);
+			//sql 실행
+			pstmt.executeUpdate();
+			
+
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.close(conn, pstmt, rs);
 		}
 	}
 	

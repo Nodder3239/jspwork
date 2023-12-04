@@ -26,7 +26,18 @@
 						<td><textarea rows="7" cols="100" name="content" readonly>${board.content }</textarea></td>
 					</tr>
 					<tr>
-						<td id=writer>${board.id }</td>
+						<td id=writer>${board.id }
+						<c:if test="${not empty sessionId}">
+							<div id="likeSection">
+							    <form action="/like.do?bno=${board.bno }&id=${sessionId}" method="post">
+	    							<button type="submit">좋아요</button>
+								</form>
+	
+								<!-- 좋아요 개수를 표시하는 부분 -->
+								<div id="likeCount">${like_Count}</div>
+							</div>
+						</c:if>
+						</td>
 					</tr>
 					<tr>
 						<td>
@@ -41,6 +52,8 @@
 					</tr>
 				</tbody>
 			</table>
+			
+			
 			<!-- 댓글 영역 -->
 			<h3><i class="fa-regular fa-pen-to-square"> 댓글</i></h3>
 			<c:forEach items="${replyList }" var="reply">
@@ -67,7 +80,7 @@
 						<textarea rows="4" cols="50" name="rcontent"
 							placeholder="댓글 작성란"></textarea>
 					</p>
-					<button type="submit" class= btn>등록</button>
+					<button type="submit">등록</button>
 				</form>		
 			</c:if>
 			<!-- 로그인한 사용자만 댓글 등록 가능 -->

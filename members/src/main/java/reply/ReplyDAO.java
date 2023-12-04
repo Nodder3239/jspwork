@@ -88,20 +88,6 @@ public class ReplyDAO {
 		}	
 	}
 	
-	public void updateReplyCount(int bno){
-		try {
-			conn = JDBCUtil.getConnection();
-			String sql = "UPDATE board SET board.reply_count = "
-					+ "(SELECT count(rno) FROM reply WHERE bno = ?) WHERE bno = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, bno);
-			//sql 실행
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JDBCUtil.close(conn, pstmt);
-		}
-	}
+
 	
 }
