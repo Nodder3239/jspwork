@@ -25,7 +25,12 @@
 				<c:forEach items="${boardList }" var="b">
 				<tr>
 					<td>${b.bno }</td>
-					<td><a href="/boardview.do?bno=${b.bno }">${b.title }</a></td>
+					<td><a href="/boardview.do?bno=${b.bno }">${b.title }
+					<c:if test="${b.reply_count ne 0}">
+						<small>[&nbsp;<c:out value="${b.reply_count}"/>&nbsp;]</small>
+					</c:if>
+					</a></td>
+					
 					<!-- 수정일이 있을 경우 수정 날짜값이 표시되도록 함 -->
 					<td>
 						<c:choose>

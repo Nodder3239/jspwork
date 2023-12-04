@@ -57,7 +57,20 @@ public class MainController extends HttpServlet {
 		//view에 출력 객체 생성
 		PrintWriter out = response.getWriter();
 
-		if(command.equals("/memberlist.do")) {
+		if(command.equals("/main.do")){ //http://localhost:8080/
+			//메인 페이지에 게시글 보내기
+			List<Board> boardList = bDAO.getBoardList();
+			request.setAttribute("boardList", boardList);			
+			
+			if(boardList.size()>=3) {
+				//게시글 3개를 저장할 배열 생성
+				Board[] newBoards = {boardList.get(0), boardList.get(1), boardList.get(2)};
+				
+				request.setAttribute("boardList", newBoards);
+			}
+			
+			nextPage="/main.jsp";
+		}else if(command.equals("/memberlist.do")) {
 			//회원 정보를 db에서 가져옴
 			List<Member> memberList = mDAO.getMemberList();
 			//모델 생성
@@ -111,7 +124,7 @@ public class MainController extends HttpServlet {
 				//nextPage = "/index.jsp";			
 				out.println("<script>");
 				out.println("alert('로그인 되었습니다.')");
-				out.println("location.href='../index.jsp'");
+				out.println("location.href='../main.jsp'");
 				out.println("</script>");
 				out.flush();
 				out.close();
@@ -142,9 +155,12 @@ public class MainController extends HttpServlet {
 		}
 		
 		//게시판
+		
 		if(command.equals("/boardlist.do")) {
 			//db에서 list를 가져옴
 			List<Board> boardList = bDAO.getBoardList();
+
+			
 			//모델 생성
 			request.setAttribute("boardList", boardList);
 			nextPage="/board/boardlist.jsp";
@@ -177,6 +193,8 @@ public class MainController extends HttpServlet {
 			//모델 생성해서 뷰로 보내기
 			request.setAttribute("board", board);
 			request.setAttribute("replyList", replyList);
+			
+			rDAO.updateReplyCount(bno);
 			
 			nextPage="/board/boardview.jsp";
 		}else if(command.equals("/deleteboard.do")) {
@@ -221,6 +239,7 @@ public class MainController extends HttpServlet {
 			String rcontent = request.getParameter("rcontent");
 			String replyer = request.getParameter("replyer");
 			
+			
 			//댓글 등록 처리
 			Reply r = new Reply();
 			r.setBno(bno);
@@ -229,9 +248,12 @@ public class MainController extends HttpServlet {
 			
 			rDAO.insertreply(r);
 			
+			
+
 		}
 		if(command.equals("/deletereply.do")) {
 			int rno = Integer.parseInt(request.getParameter("rno"));
+
 			//삭제 처리 메서드 호출
 			rDAO.deletereply(rno);		
 		}

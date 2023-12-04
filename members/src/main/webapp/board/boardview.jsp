@@ -67,7 +67,7 @@
 						<textarea rows="4" cols="50" name="rcontent"
 							placeholder="댓글 작성란"></textarea>
 					</p>
-					<button type="submit">등록</button>
+					<button type="submit" class= btn>등록</button>
 				</form>		
 			</c:if>
 			<!-- 로그인한 사용자만 댓글 등록 가능 -->

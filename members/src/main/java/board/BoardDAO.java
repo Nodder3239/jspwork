@@ -35,6 +35,7 @@ public class BoardDAO {
 				b.setHit(rs.getInt("hit"));
 				b.setFilename(rs.getString("filename"));
 				b.setId(rs.getString("id"));
+				b.setReply_count(rs.getInt("reply_count"));
 				
 				boardList.add(b);	//어레이리스트에 객체 1명 저장
 			}
@@ -89,6 +90,7 @@ public class BoardDAO {
 				b.setHit(rs.getInt("hit"));
 				b.setFilename(rs.getString("filename"));
 				b.setId(rs.getString("id"));
+				
 				
 				//조회수 1증가
 				sql = "UPDATE board SET hit = hit + 1 WHERE bno = ?";

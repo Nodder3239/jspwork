@@ -11,28 +11,32 @@ header #logo{width: 20%; float: left; line-height: 80px;}
 #logo h1 a{color: greenyellow; padding-left: 24px; font-style: italic;}
 #logo h1 a:hover{color: #eee;}
 header nav{width: 70%; float: right;}
-#topMenu{line-height: 80px;}
+#topMenu{line-height: 80px; padding-left: 150px;}
 #topMenu li{float: left; margin: 0 20px;}
 #topMenu li a{color: #eee; padding: 0 20px;}
 #topMenu li a:hover{color: #444;}
 
+/* main 스타일 */
+#main{width: 1000xp; height: 600px; margin: 40px auto;}
+#main h1{color: blue; font-style: italic; padding: 20px 60px;}
+#main .main_img{margin: 16px 30px; float: left;}
+#main .main_img img{border-radius: 5px;}
+#main .newboard{margin: 20px;}
+#main .newboard h3{margin: 20px;}
+#main .newboard p{line-height: 2.5;}
+
 /* footer 스타일 */
-footer{height: 80px; border-top: 2px solid #222;}
+footer{height: 80px; border-top: 2px solid #222; clear: both;}
 #bottomMenu{margin: 10px 20px;}
 #bottomMenu li{float: left; margin: 10px 0; padding: 0 10px;
 	border-right: 1.5px solid #ccc;}
 #bottomMenu li a{color: #444;}
 #bottomMenu li:last-child{border: none;}
 
-/* main 스타일 */
-#main{margin: 0 auto; text-align: center;}
-#main .main_img{margin: 16px;}
-#main .main_img img{border-radius: 5px;}
-
 /* 회원 목록 스타일 */
-#memberlist{width: 700px; margin: 20px auto;}
+#memberlist{width: 750px; margin: 20px auto;}
 #memberlist .logout{text-align: right;}
-#memberlist table{width: 700px; margin: 20px auto;}
+#memberlist table{width: 750px; margin: 20px auto;}
 #memberlist table, th, td{border: 1px solid #ccc; 
   border-collapse: collapse; text-align: center;}
 table th, td{padding: 10px;}
@@ -43,7 +47,7 @@ table thead{background: #eee;}
 #join form{margin: 20px auto;}
 form ul li{margin: 20px;}
 form .button{margin-top: 16px;}
-form .button button{padding: 5px;}
+form .button button{padding: 10px;}
 form label{width: 120px; float: left; padding-left: 20px;}
 form input{padding: 5px;}
 
@@ -103,5 +107,5 @@ table thead{background: #eee;}
 .replylogin{background-color: #eee; margin: 10px 0; padding: 16px; text-align: center;}
 .replylogin a{color: blue;}
 .replylogin a:hover{text-decoration: underline;}
-button{float: right; margin: 0 10px;}
-#DR{font-size: 0.8em; margin: 10px 2.5px ; border-radius: 50%;}
+.btn{float: right; margin: 0 10px;}
+#DR{font-size: 0.5em; margin: 0px 2.5px ; border-radius: 50%; float: right;}
