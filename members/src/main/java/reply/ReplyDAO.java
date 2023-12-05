@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import common.JDBCUtil;
 
@@ -88,6 +90,28 @@ public class ReplyDAO {
 		}	
 	}
 	
+	public void updatereply(Reply r) {
+		//현재 날짜와 시간 객체 생성
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		try {
+			//db연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리 : 수정일 처리는 현재 날짜와 시간을 입력함
+			String sql = "UPDATE reply SET"
+					+ ", rcontent = ?, modifydate= ? WHERE rno = ?";
+			pstmt = conn.prepareStatement(sql);
+			//폼에 입력된 데이터를 가져와서 db에 저장
+			pstmt.setString(1, r.getRcontent());
+			pstmt.setTimestamp(2, now);
+			pstmt.setInt(3, r.getRno());
 
+			//sql 실행
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt);
+		}
+	}
 	
 }

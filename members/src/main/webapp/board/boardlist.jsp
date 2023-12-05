@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,14 +20,14 @@
 			<table>
 				<thead>
 					<tr>
-						<th>글번호</th><th>글제목</th><th>작성일</th><th>조회수</th><th>아이디</th><th>좋아요</th>
+						<th>글번호</th><th id=btitle>글제목</th><th>작성일</th><th>조회수</th><th>아이디</th><th>좋아요</th>
 					</tr>
 				</thead>
 				<tbody>
 				<c:forEach items="${boardList }" var="b">
 				<tr>
 					<td>${b.bno }</td>
-					<td><a href="/boardview.do?bno=${b.bno }">${b.title }
+					<td id="btitle"><a href="/boardview.do?bno=${b.bno }">${b.title }
 					<c:if test="${b.reply_count ne 0}">
 						<small>[&nbsp;<c:out value="${b.reply_count}"/>&nbsp;]</small>
 					</c:if>
@@ -63,14 +62,20 @@
 			<!-- 글쓰기 버튼 -->
 			<div>
 				<a href="writeform.do"><button type="button" class="btn">글쓰기</button></a>
+				<!-- 페이지 내비게이터 -->
 				<a href=""><i class="fa-solid fa-forward fa-rotate-180"></i></a>
 				<a href=""><i class="fa-solid fa-play fa-rotate-180"></i></a>
 				<a href="">0</a>
 				<a href=""><i class="fa-solid fa-play"></i></a>
 				<a href=""><i class="fa-solid fa-forward"></i></a>
 			</div>
-			<!-- 페이지 내비게이터 -->
-			
+			<!-- 검색 -->
+			<form action="/search.do" method="post">
+				<div id="search">
+					<input type="text" id="query" name="query">
+					<button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+				</div>
+			</form>
 		</section>
 	</div>
 	<jsp:include page="../footer.jsp"/>

@@ -60,6 +60,7 @@ public class MainController extends HttpServlet {
 		HttpSession session = request.getSession();
 		//view에 출력 객체 생성
 		PrintWriter out = response.getWriter();
+		
 
 		if(command.equals("/main.do")){ //http://localhost:8080/
 			//메인 페이지에 게시글 보내기
@@ -185,6 +186,7 @@ public class MainController extends HttpServlet {
 			bDAO.write(b);
 					
 		}else if(command.equals("/boardview.do")){
+
 			//글 제목에서 요청한 글 번호 받기
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			
@@ -198,8 +200,14 @@ public class MainController extends HttpServlet {
 			request.setAttribute("board", board);
 			request.setAttribute("replyList", replyList);
 			
-			
-			
+			// 좋아요 개수 가져오기
+			int likeCount = lDAO.getLikeCountByBno(bno);
+
+			// 모델 생성해서 뷰로 보내기
+			request.setAttribute("like_count", likeCount);
+
+			lDAO.updateLikeCount(bno);
+			bDAO.updateReplyCount(bno);
 			
 			nextPage="/board/boardview.jsp";
 		}else if(command.equals("/deleteboard.do")) {
@@ -233,8 +241,11 @@ public class MainController extends HttpServlet {
 			
 			bDAO.updateboard(b);
 			
-			
-			//nextPage="/boardlist.do";
+		}else if(command.equals("/search.do")) {
+			String query = request.getParameter("query");
+			List<Board> boardList = bDAO.searchBoards(query);
+			request.setAttribute("boardList", boardList);
+			nextPage="/board/boardlist.jsp";
 		}
 		
 		//댓글 구현
@@ -252,32 +263,46 @@ public class MainController extends HttpServlet {
 			
 
 			rDAO.insertreply(r);
-			bDAO.updateReplyCount(bno);
-
-
+		}else if(command.equals("/updatereplyform.do")) {
+			int rno = Integer.parseInt(request.getParameter("rno"));
+			String rcontent = request.getParameter("rcontent");
+				
+			//db에 저장
+			Reply r = new Reply();
+			r.setRcontent(rcontent);
+			r.setRno(rno);
+			
+			rDAO.updatereply(r);
 		}
+		
+		
+		
 		if(command.equals("/deletereply.do")) {
 			int rno = Integer.parseInt(request.getParameter("rno"));
-			int bno = Integer.parseInt(request.getParameter("bno"));
 			//삭제 처리 메서드 호출
 			rDAO.deletereply(rno);	
-			bDAO.updateReplyCount(bno);
 			
 			nextPage="/boardlist.do";
 		}
 		
+		//좋아요
 		if(command.equals("/like.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			String id = request.getParameter("id");
+			List<Blike> likeList = lDAO.getLikeList(bno);
 			
-			//댓글 등록 처리
-			Blike l = new Blike();
-			l.setBno(bno);
-			l.setId(id);
-
-			lDAO.like(l);
+			
+			//아이디가 중복되면 delete, 아니면 update
+			if (lDAO.likeListContainsUser(likeList, id)) {	
+				lDAO.deleteLike(id, bno);	
+			} else {
+				Blike l = new Blike();
+				l.setBno(bno);
+				l.setId(id);
+			    lDAO.like(l);
+			}	
 			lDAO.updateLikeCount(bno);
-			
+			nextPage="boardview.do?bno=" + bno;
 		}
 		
 
@@ -287,7 +312,7 @@ public class MainController extends HttpServlet {
 		//새로고침하면 게시글, 댓글 중복 생성 문제 해결
 		if(command.equals("/write.do") || command.equals("/updateboard.do")) { 
 			response.sendRedirect("boardlist.do");
-		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/like.do")) {
+		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/updatereplyform.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			response.sendRedirect("boardview.do?bno=" + bno);
 		}else{
@@ -298,5 +323,4 @@ public class MainController extends HttpServlet {
 
 
 	}
-	
 }

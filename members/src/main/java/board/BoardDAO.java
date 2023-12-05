@@ -168,8 +168,43 @@ public class BoardDAO {
 		} catch (SQLException e) {	
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, pstmt, rs);
+			JDBCUtil.close(conn, pstmt);
 		}
 	}
 	
+	public List<Board> searchBoards(String query) {
+	    List<Board> boardList = new ArrayList<>();
+
+	    try {
+	        conn = JDBCUtil.getConnection();
+	        String sql = "SELECT * FROM board WHERE title LIKE ? OR content LIKE ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + query + "%");
+	        pstmt.setString(2, "%" + query + "%");
+	        rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				Board b = new Board();
+				b.setBno(rs.getInt("bno"));
+				b.setTitle(rs.getString("title"));
+				b.setContent(rs.getString("content"));
+				b.setCreateDate(rs.getTimestamp("createdate"));
+				b.setModifyDate(rs.getTimestamp("modifydate"));
+				b.setHit(rs.getInt("hit"));
+				b.setFilename(rs.getString("filename"));
+				b.setId(rs.getString("id"));
+				b.setReply_count(rs.getInt("reply_count"));
+				b.setLike_count(rs.getInt("like_count"));
+
+				boardList.add(b);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        JDBCUtil.close(conn, pstmt, rs);
+	    }
+
+	    return boardList;
+	}
 }

@@ -30,11 +30,11 @@
 						<c:if test="${not empty sessionId}">
 							<div id="likeSection">
 							    <form action="/like.do?bno=${board.bno }&id=${sessionId}" method="post">
-	    							<button type="submit">좋아요</button>
+	    							<button type="submit" id="DR"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></button>
 								</form>
 	
 								<!-- 좋아요 개수를 표시하는 부분 -->
-								<div id="likeCount">${like_Count}</div>
+								<div id="likeCount">좋아요: ${like_count }개</div>
 							</div>
 						</c:if>
 						</td>
@@ -55,6 +55,7 @@
 			
 			
 			<!-- 댓글 영역 -->
+			<div id="re">
 			<h3><i class="fa-regular fa-pen-to-square"> 댓글</i></h3>
 			<c:forEach items="${replyList }" var="reply">
 			<div class="reply">
@@ -89,7 +90,7 @@
 					<a href="/loginform.do"><i class="fa-solid fa-user"> 로그인한 사용자만 댓글 등록이 가능합니다.</i></a>
 				</div>	
 			</c:if>
-			
+			</div>
 		</section>
 	</div>
 	<jsp:include page="../footer.jsp"/>
