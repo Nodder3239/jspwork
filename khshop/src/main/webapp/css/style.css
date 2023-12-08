@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+ul li{list-style: none;}
+#join{width: 600px; margin: 20px auto;}
+#join form{margin: 20px auto;}
+form ul li{margin: 20px;}
+form .button{margin-top: 16px;}
+form .button button{padding: 10px;}
+form label{width: 120px; float: left; }
+form input{width: 250px; padding: 5px;}
+#join button{padding: 5px;}

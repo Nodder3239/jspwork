@@ -1,36 +1,41 @@
 @charset "UTF-8";
 @font-face {
-    font-family: 'Nanum';
-    src: url('../resources/fonts/NanumMyeongjo.ttf') format('truetype');
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 /* 공통 스타일 */
 *{margin: 0; padding: 0;}
+body{font-family: 'NanumSquareRound';}
+
 #container{width: 90%; margin: 30px auto 100px;}
 ul li{list-style: none;}
 a{text-decoration: none;}
-body {
-	font-family: 'Nanum';
-}
+
 
 /* header 스타일 */
-header{height: 80px; background: #0077cc;}
+header{height: 80px; background: #EDEDED;}
 header #logo{width: 20%; float: left; line-height: 80px;}
-#logo h1 a{color: greenyellow; padding-left: 24px; font-style: italic;}
-#logo h1 a:hover{color: #eee;}
+#logo h1 a{color: #111; padding-left: 24px; font-style: italic;}
+#logo h1 a:hover{color: #444;}
 header nav{width: 70%; float: right;}
 #topMenu{line-height: 80px; padding-left: 150px;}
 #topMenu li{float: left; margin: 0 20px;}
-#topMenu li a{color: #eee; padding: 0 20px;}
-#topMenu li a:hover{color: #444;}
+#topMenu li a{color: #444; padding: 0 20px;}
+#topMenu li a:hover{color: #111;}
 
 /* main 스타일 */
 #main{width: 1000xp; height: 600px; margin: 40px auto;}
-#main h1{color: blue; font-style: italic; padding: 20px 60px;}
+#main h1{color: #111; font-style: italic; padding: 20px 60px;}
 #main .main_img{margin: 16px 30px; float: left;}
 #main .main_img img{border-radius: 5px;}
 #main .newboard{margin: 20px;}
 #main .newboard h3{margin: 20px;}
-#main .newboard p{line-height: 2.5;}
+#main .newboard p{line-height: 2;}
+#main .likeboard{margin: 20px;}
+#main .likeboard h3{margin: 20px;}
+#main .likeboard p{line-height: 2;}
 
 /* footer 스타일 */
 footer{height: 80px; border-top: 2px solid #222; clear: both;}
@@ -77,6 +82,8 @@ form input{padding: 5px;}
 #boardlist table{width: 1000px; margin: 20px auto; background-color: #CAC8c8; border-radius: 20px;}
 #boardlist table, th, td{text-align: center;}
 #boardlist button{padding: 10px;}
+#boardlist .pagination{text-align: center;}
+.pagination{margin: 5px; color: black; text-decoration: none;}
 
 /* 글쓰기 스타일*/
 #writeform{width: 550px; margin: 20px auto;}
@@ -119,13 +126,22 @@ table th, td{padding: 10px;}
 .replylogin a{color: blue;}
 .replylogin a:hover{text-decoration: underline;}
 
+
+
+
 /* only */
+.medal{background-color: #cdcdcd;}
 .btn{float: right; margin: 0 10px;}
 #DR{font-size: 0.5em; margin: 0px 2.5px ; border-radius: 50%; float: right;}
-#search{margin-top: -20px; margin-left: 100px; text-align: center;}
 #boardlist table tr td a{color: black;}
 #boardlist table{padding: 20px; line-height: 1;}
 #boardlist table tr #btitle{width: 400px;}
 #boardlist div a i{color: black;}
 #re{margin: 0 50px;}
 #boardlist table thead, tbody{background-color: #FFF;}
+
+#search{text-align: center;}
+#bottomlist{height:100px; margin:0 auto; text-align: center; margin-top: -80px}
+.searchBtn{padding: 5px;}
+.writeBtn{padding: 3px;}
+p{color: #555; margin-top: 5px;}

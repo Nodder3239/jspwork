@@ -33,6 +33,11 @@
 						</tr>
 						<tr>
 							<td>
+								<input type="file" name="filename">
+							</td>
+						</tr>
+						<tr>
+							<td>
 								<textarea rows="7" cols="100" name="content" 
 									placeholder="글내용"></textarea>
 							</td>
@@ -40,7 +45,8 @@
 						<tr>
 							<td>
 								<button type="submit">등록</button>
-								<button type="reset">취소</button>
+								<button type="reset">리셋</button>
+								<a href="/boardlist.do"><button type="button">취소</button></a>
 							</td>
 						</tr>
 					</tbody>

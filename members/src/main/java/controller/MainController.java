@@ -74,6 +74,19 @@ public class MainController extends HttpServlet {
 				request.setAttribute("boardList", newBoards);
 			}
 			
+			//메인 페이지에 게시글 보내기
+			List<Board> likeList = bDAO.getLikeList();
+			request.setAttribute("likeList", likeList);			
+			
+			if(likeList.size()>=3) {
+				//게시글 3개를 저장할 배열 생성
+				Board[] newLikes = {likeList.get(0), likeList.get(1), likeList.get(2)};
+				
+				request.setAttribute("likeList", newLikes);
+			}
+			
+			
+			
 			nextPage="/main.jsp";
 		}else if(command.equals("/memberlist.do")) {
 			//회원 정보를 db에서 가져옴
@@ -129,7 +142,7 @@ public class MainController extends HttpServlet {
 				//nextPage = "/index.jsp";			
 				out.println("<script>");
 				out.println("alert('로그인 되었습니다.')");
-				out.println("location.href='../main.jsp'");
+				out.println("location.href='../main.do'");
 				out.println("</script>");
 				out.flush();
 				out.close();
@@ -160,14 +173,81 @@ public class MainController extends HttpServlet {
 		}
 		
 		//게시판
-		
 		if(command.equals("/boardlist.do")) {
-			//db에서 list를 가져옴
-			List<Board> boardList = bDAO.getBoardList();
-
+			//페이지 처리
+			String pageNum = request.getParameter("pageNum");
+			if(pageNum == null) { //페이지 번호를 클릭하지 않았을때 기본값
+				pageNum = "1";
+			}
 			
-			//모델 생성
+			//현재 페이지
+			int currentPage = Integer.parseInt(pageNum);
+			//페이지당 게시글 수 - 10(pageSize)
+			int pageSize = 10;
+			//1페이지의 첫번째행(startRow) : 1번, 2페이지 : 11번, 3페이지 : 21
+			int startRow = (currentPage - 1) * pageSize + 1;
+			System.out.println("페이지 첫행: " + startRow);
+			
+			//시작페이지(startPage) : 12행 - 2페이지, 22행 - 3페이지
+			int startPage = startRow / pageSize + 1;
+			
+			//종료(끝) 페이지 : 전체 게시글총수 / 페이지당 개수
+			int totalRow = bDAO.getBoardCount();
+			int endPage = totalRow / pageSize;
+			//페이지당 개수(10)로 나누어 떨어지지 않는 경우 코딩
+			endPage = (totalRow % pageSize == 0) ? endPage : endPage + 1;
+			//System.out.println("총 게시글 수: " + totalRow);
+			//System.out.println("마지막 페이지: " + endPage);
+			
+			//검색 처리
+			String _field = request.getParameter("field"); //임시로 저장
+			String _kw = request.getParameter("kw");
+			
+			String field = "";
+			String kw = "";
+			
+			//null 처리
+			if(_field != null) { //필드값이 있는 경우
+				field = _field;
+			}else { //필드값이 없는 경우(디폴트)
+				field = "title";
+			}
+			
+			if(_kw != null) { //검색어가 있는 경우
+				kw = _kw;
+			}else {  //검색어가 없는 경우
+				kw = "";
+			}
+		
+			//페이지 처리 목록 메서드 호출
+			//List<Board> boardList = bDAO.getBoardList(currentPage);
+			//검색 처리
+			//List<Board> boardList = bDAO.getBoardList(field, kw);
+			//페이지와 검색 처리
+			List<Board> boardList = bDAO.getBoardList(field, kw, currentPage);
+			
+			//모델로 생성
 			request.setAttribute("boardList", boardList);
+			request.setAttribute("page", currentPage);    //현재 페이지
+			request.setAttribute("startPage", startPage); //시작 페이지
+			request.setAttribute("endPage", endPage);     //종료 페이지
+			request.setAttribute("field", field);  //검색어
+			request.setAttribute("kw", kw);  //검색어
+			
+			List<Board> likeList = bDAO.getLikeList();
+			request.setAttribute("likeList", likeList);			
+			
+			if(likeList.size()>=3) {
+				//게시글 3개를 저장할 배열 생성
+				Board l1 = likeList.get(0);
+				Board l2 = likeList.get(1);
+				Board l3 = likeList.get(2);
+				
+				request.setAttribute("l1", l1);
+				request.setAttribute("l2", l2);
+				request.setAttribute("l3", l3);
+			}
+			
 			nextPage="/board/boardlist.jsp";
 		}else if(command.equals("/writeform.do")) {
 			nextPage="/board/writeform.jsp";
@@ -240,13 +320,36 @@ public class MainController extends HttpServlet {
 			b.setBno(bno);
 			
 			bDAO.updateboard(b);
+		//검색 처리	
+		}/*else if(command.equals("/search.do")) {
 			
-		}else if(command.equals("/search.do")) {
-			String query = request.getParameter("query");
-			List<Board> boardList = bDAO.searchBoards(query);
+			String field = request.getParameter("field");
+			String kw = request.getParameter("kw");
+
+			
+			List<Board> boardList = bDAO.searchBoards(field, kw);
+			
 			request.setAttribute("boardList", boardList);
+			
+			List<Board> likeList = bDAO.getLikeList();
+			request.setAttribute("likeList", likeList);			
+			
+			
+			if(likeList.size()>=3) {
+				//게시글 3개를 저장할 배열 생성
+				Board l1 = likeList.get(0);
+				Board l2 = likeList.get(1);
+				Board l3 = likeList.get(2);
+				
+				request.setAttribute("l1", l1);
+				request.setAttribute("l2", l2);
+				request.setAttribute("l3", l3);
+			}
+			
+			
 			nextPage="/board/boardlist.jsp";
 		}
+		*/
 		
 		//댓글 구현
 		if(command.equals("/insertreply.do")) {
@@ -261,20 +364,30 @@ public class MainController extends HttpServlet {
 			r.setRcontent(rcontent);
 			r.setReplyer(replyer);
 			
-
 			rDAO.insertreply(r);
+			
 		}else if(command.equals("/updatereplyform.do")) {
 			int rno = Integer.parseInt(request.getParameter("rno"));
+						
+			//글 상세보기 처리
+			Reply reply = rDAO.getReply(rno);
+			
+			//모델 생성해서 뷰로 보내기
+			request.setAttribute("reply", reply);
+			
+			
+			nextPage="/board/updatereplyform.jsp";
+		}else if(command.equals("/updatereply.do")) {
+			int rno = Integer.parseInt(request.getParameter("rno"));
 			String rcontent = request.getParameter("rcontent");
-				
-			//db에 저장
+			
 			Reply r = new Reply();
-			r.setRcontent(rcontent);
 			r.setRno(rno);
+			r.setRcontent(rcontent);
 			
 			rDAO.updatereply(r);
+			
 		}
-		
 		
 		
 		if(command.equals("/deletereply.do")) {
@@ -312,7 +425,7 @@ public class MainController extends HttpServlet {
 		//새로고침하면 게시글, 댓글 중복 생성 문제 해결
 		if(command.equals("/write.do") || command.equals("/updateboard.do")) { 
 			response.sendRedirect("boardlist.do");
-		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/updatereplyform.do")) {
+		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/updatereply.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			response.sendRedirect("boardview.do?bno=" + bno);
 		}else{

@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import common.JDBCUtil;
 
 public class ReplyDAO {
@@ -90,6 +89,7 @@ public class ReplyDAO {
 		}	
 	}
 	
+	//댓글 수정
 	public void updatereply(Reply r) {
 		//현재 날짜와 시간 객체 생성
 		Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -97,8 +97,8 @@ public class ReplyDAO {
 			//db연결
 			conn = JDBCUtil.getConnection();
 			//sql 처리 : 수정일 처리는 현재 날짜와 시간을 입력함
-			String sql = "UPDATE reply SET"
-					+ ", rcontent = ?, modifydate= ? WHERE rno = ?";
+			String sql = "UPDATE reply SET "
+					+ "rcontent = ?, rupdate= ? WHERE rno = ?";
 			pstmt = conn.prepareStatement(sql);
 			//폼에 입력된 데이터를 가져와서 db에 저장
 			pstmt.setString(1, r.getRcontent());
@@ -114,4 +114,35 @@ public class ReplyDAO {
 		}
 	}
 	
+	//댓글 1개만 보기(수정시)
+	public Reply getReply(int rno) {
+		Reply r = new Reply();	//빈 객체 생성
+		try {
+			//db 연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리
+			String sql = "SELECT * FROM reply WHERE rno = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rno);
+			//id에 일치하는 1개의 주소 가져옴
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) { //검색 결과가 있으면
+				r.setBno(rs.getInt("bno"));
+				r.setRno(rs.getInt("rno"));
+				r.setRcontent(rs.getString("rcontent"));
+				r.setRdate(rs.getTimestamp("rdate"));
+				r.setRupdate(rs.getTimestamp("rupdate"));
+				r.setReplyer(rs.getString("replyer"));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		
+		return r;
+		
+	}
 }

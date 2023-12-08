@@ -32,7 +32,8 @@
 						<tr>
 							<td>
 								<button type="submit">저장</button>
-								<button type="reset">취소</button>
+								<button type="reset">리셋</button>
+								<a href="/boardview.do?bno=${board.bno }"><button type="button">취소</button></a>
 							</td>
 						</tr>
 					</tbody>

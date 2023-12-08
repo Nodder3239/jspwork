@@ -9,7 +9,7 @@
 <meta charset="UTF-8">
 <title>글 상세보기</title>
 <script src="https://kit.fontawesome.com/69798321c6.js"></script>
-<link rel="stylesheet" href="/resources/css/style.css">
+<link rel="stylesheet" href="../resources/css/style.css">
 </head>
 <body>
 	<jsp:include page="../header.jsp"/>
@@ -21,6 +21,9 @@
 				<tbody>
 					<tr>
 						<td><input type="text" name="title" value="${board.title }" readonly></td>
+					</tr>
+					<tr>
+						
 					</tr>
 					<tr>
 						<td><textarea rows="7" cols="100" name="content" readonly>${board.content }</textarea></td>
@@ -60,7 +63,16 @@
 			<c:forEach items="${replyList }" var="reply">
 			<div class="reply">
 				<p>${reply.rcontent }</p>
-				<p>작성자: ${reply.replyer } (작성일: <fmt:formatDate value="${reply.rdate }" pattern="yyyy-MM-dd HH:mm:ss"/> ) 
+				<p>작성자: ${reply.replyer } (작성일: 
+					<c:choose>
+							<c:when test="${not empty reply.rupdate }">
+								<fmt:formatDate value="${reply.rupdate }" pattern="yyyy-MM-dd HH:mm:ss"/>
+							</c:when>
+							<c:otherwise>
+								<fmt:formatDate value="${reply.rdate }" pattern="yyyy-MM-dd HH:mm:ss"/>
+							</c:otherwise>
+					</c:choose> 
+				) 
 				<c:if test="${sessionId eq reply.replyer }">
 				<a href="/deletereply.do?bno=${board.bno }&rno=${reply.rno }"
 							onclick="return confirm('댓글을 삭제하시겠습니까?')">

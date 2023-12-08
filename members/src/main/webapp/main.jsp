@@ -26,6 +26,15 @@
 				</c:forEach>
 				
 			</div>
+			<!-- 인기 게시글 박스 -->
+			<div class="likeboard">
+				<h3>인기 게시글</h3>
+				<c:forEach items="${likeList}" var="like">
+					<p><a href="/boardview.do?bno=${like.bno}">${like.title }</a>(글쓴이: ${like.id }, 작성일: <fmt:formatDate value="${like.createDate }" pattern="yyyy-MM-dd HH:mm:ss"/>)</p>
+
+				</c:forEach>
+				
+			</div>
 		</section>
 	</div>
 	<jsp:include page="footer.jsp"/>
