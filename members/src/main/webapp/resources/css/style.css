@@ -111,6 +111,7 @@ table th, td{padding: 10px;}
 	border-radius: 20px;
 }
 #boardview table, th, td{border: none; text-align: center;}
+table tr td.left{text-align: left;}
 #boardview input{width: 550px; height: 25px; padding: 5px;}
 #boardview textarea{width: 550px; height: 300px; padding: 5px; resize: none;}
 #boardview button{padding: 5px;}

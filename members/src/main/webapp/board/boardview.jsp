@@ -26,20 +26,79 @@
 						
 					</tr>
 					<tr>
-						<td><textarea rows="7" cols="100" name="content" readonly>${board.content }</textarea></td>
+						<td>
+							<div>
+							<c:if test="${not empty board.filename }">
+								<img src="../upload/${board.filename }" alt="" style="width:100%">
+							</c:if>
+							</div>
+							${board.content }
+						</td>
+					</tr>
+					<tr>
+						<td class = "left">
+							<c:choose>
+								<c:when test="${not empty board.filename}">
+									<c:if test="${not empty sessionId}">
+										첨부파일: ${board.filename }<a href="/filedown.do?filename=${board.filename }">&nbsp;[다운로드]</a>
+									</c:if>
+									<c:if test="${empty sessionId}">
+										<c:out value="첨부파일은 로그인 후 확인 가능합니다. "/>
+									</c:if>
+								</c:when>
+								<c:otherwise>
+									<c:out value="첨부파일: - "/>
+								</c:otherwise>
+							</c:choose>
+						</td>
 					</tr>
 					<tr>
 						<td id=writer>${board.id }
-						<c:if test="${not empty sessionId}">
+						<%--<c:if test="${not empty sessionId}">
 							<div id="likeSection">
-							    <form action="/like.do?bno=${board.bno }&id=${sessionId}" method="post">
-	    							<button type="submit" id="DR"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></button>
-								</form>
-	
+								 <form action="/like.do?bno=${board.bno }&id=${sessionId}" method="post">
+								    <c:choose>
+										<c:when test= "${ n eq true}">
+											<button type="submit" id="DR"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></button>
+										</c:when>
+										<c:otherwise>
+											<button type="submit" id="DR"><i class="fa-regular fa-heart" style="color: #ff0000;"></i></button>
+										</c:otherwise>
+									</c:choose> 
+								</form> 
 								<!-- 좋아요 개수를 표시하는 부분 -->
 								<div id="likeCount">좋아요: ${like_count }개</div>
 							</div>
-						</c:if>
+						</c:if>--%>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							조회수 : ${board.hit}&nbsp;&nbsp;&nbsp;&nbsp;
+							<!-- 좋아요 영역 -->
+							<c:choose>
+								<c:when test = "${empty sessionId }">
+									<span><i class="fa-solid fa-heart" style="color: #000000;"></i></span>
+									<span>${voteCount }</span>
+									<a href="#" onclick="location.href = '/loginform.do' ">(좋아요는 로그인이 필요합니다.)</a>
+								</c:when>
+								<c:otherwise>
+									<!-- 하트 상태 바꾸기 -->
+									<c:choose>
+										<c:when test="${sw eq true }">
+											<span>
+												<a href="/like.do?bno=${board.bno }&id=${sessionId}"><i class="fa-regular fa-heart" style="color: #ff0000;"></i></a>
+											</span>
+										</c:when>
+										<c:otherwise>
+											<span>
+												<a href="/like.do?bno=${board.bno }&id=${sessionId}"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></a>
+											</span>
+										</c:otherwise>
+									</c:choose>
+									<span>${voteCount }</span>
+								</c:otherwise>							
+							</c:choose>
 						</td>
 					</tr>
 					<tr>
@@ -84,13 +143,13 @@
 			</div>
 			</c:forEach>
 			
-			<c:if test="${not empty sessionId}">
 			<!-- 댓글 등록 -->
+			<c:if test="${not empty sessionId}">
 				<form action="/insertreply.do" method="post" id="replyform">
 					<input type="hidden" name="bno" value="${board.bno }">
 					<input type="hidden" name="replyer" value="${sessionId }">
 					<p>
-						<textarea rows="4" cols="50" name="rcontent"
+						<textarea rows="4" cols="100" name="rcontent"
 							placeholder="댓글 작성란"></textarea>
 					</p>
 					<button type="submit">등록</button>

@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
 import blike.Blike;
 import blike.BlikeDAO;
 import board.Board;
@@ -20,6 +24,8 @@ import member.Member;
 import member.MemberDAO;
 import reply.Reply;
 import reply.ReplyDAO;
+import voter.Voter;
+import voter.VoterDAO;
 
 @WebServlet("*.do")	// "/" 이하의 경로에서 do로 끝나는 확장자는 모두 허용
 public class MainController extends HttpServlet {
@@ -28,12 +34,14 @@ public class MainController extends HttpServlet {
 	BoardDAO bDAO;
 	ReplyDAO rDAO;
 	BlikeDAO lDAO;
+	VoterDAO vDAO;
        
     public MainController() {	//생성자
         mDAO = new MemberDAO();
         bDAO = new BoardDAO();
         rDAO = new ReplyDAO();
         lDAO = new BlikeDAO();
+        vDAO = new VoterDAO();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -113,8 +121,11 @@ public class MainController extends HttpServlet {
 			m.setName(name);
 			m.setEmail(email);
 			m.setGender(gender);
-			
+			//db에 저장함
 			mDAO.insertMember(m);
+			//자동 로그인
+			session.setAttribute("sessionId", m.getId());	//아이디를 가져와서 sessionId(세션이름) 발급
+			session.setAttribute("sessionName", m.getName());	//이름을 가져와서 sessionName(세션이름) 발급
 			nextPage = "/index.jsp";
 		}else if(command.equals("/memberview.do")) {
 			String id = request.getParameter("id");
@@ -135,9 +146,11 @@ public class MainController extends HttpServlet {
 			m.setPasswd(passwd);
 			
 			//로그인 인증
-			boolean result = mDAO.checkLogin(m);
-			if(result){
-				session.setAttribute("sessionId", id);
+			Member member = mDAO.checkLogin(m);
+			String name = member.getName();
+			if(name != null){
+				session.setAttribute("sessionId", id);//아이디 세션 발급
+				session.setAttribute("sessionName", name);//이름 세션 발급
 				//로그인 후 페이지 이동
 				//nextPage = "/index.jsp";			
 				out.println("<script>");
@@ -246,21 +259,57 @@ public class MainController extends HttpServlet {
 				request.setAttribute("l1", l1);
 				request.setAttribute("l2", l2);
 				request.setAttribute("l3", l3);
+			}else if(likeList.size() == 2) {
+				Board l1 = likeList.get(0);
+				Board l2 = likeList.get(1);
+
+				request.setAttribute("l1", l1);
+				request.setAttribute("l2", l2);
+			}else if(likeList.size() == 1) {
+				Board l1 = likeList.get(0);
+
+				request.setAttribute("l1", l1);
 			}
 			
 			nextPage="/board/boardlist.jsp";
 		}else if(command.equals("/writeform.do")) {
 			nextPage="/board/writeform.jsp";
 		}else if(command.equals("/write.do")) {
+			String realFolder = "C:\\jspworks\\members\\src\\main\\webapp\\upload";
+			int maxSize = 10*1024*1024; //10MB
+			String encType = "utf-8";	//파일 이름 한글 인코딩
+			DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
+			
+			//5가지 인자
+			MultipartRequest multi = 
+					new MultipartRequest(request, realFolder, maxSize, 
+							encType, policy);
+			
+			
 			//폼 데이터 받기
-			String title = request.getParameter("title");
-			String content = request.getParameter("content");
+			String title = multi.getParameter("title");
+			String content = multi.getParameter("content");
+			
+			//세션 가져오기
 			String id = (String) session.getAttribute("sessionId");
+			
+			//file 파라미터 추출
+			Enumeration<?> files = multi.getFileNames();
+			String filename = "";
+			while(files.hasMoreElements()) {	//파일 이름이 있는 동안 반복
+				String userFilename = (String) files.nextElement();
+				
+				//실제 저장될 이름
+				filename = multi.getFilesystemName(userFilename);		
+			}
+			
+			
 			
 			//db에 저장
 			Board b = new Board();
 			b.setTitle(title);
 			b.setContent(content);
+			b.setFilename(filename);
 			b.setId(id);
 			
 			bDAO.write(b);
@@ -273,6 +322,7 @@ public class MainController extends HttpServlet {
 			//글 상세보기 처리
 			Board board = bDAO.getBoard(bno);
 			
+			
 			//댓글 목록 보기
 			List<Reply> replyList = rDAO.getReplyList(bno);
 			
@@ -282,12 +332,42 @@ public class MainController extends HttpServlet {
 			
 			// 좋아요 개수 가져오기
 			int likeCount = lDAO.getLikeCountByBno(bno);
+			//List<Blike> likeList = lDAO.getLikeList(bno);
 
 			// 모델 생성해서 뷰로 보내기
 			request.setAttribute("like_count", likeCount);
 
-			lDAO.updateLikeCount(bno);
+			//lDAO.updateLikeCount(bno);
+			int voteCount = vDAO.voteCount(bno);
+			request.setAttribute("voteCount", voteCount);
+			
 			bDAO.updateReplyCount(bno);
+			
+			String id = (String) session.getAttribute("sessionId");
+			
+			//하트의 상태 바꾸기(토글 방식)
+			boolean sw = false;
+			int result = vDAO.checkVoter(bno, id);	//게시글 번호, 세션 아이디
+			if(result == 0) {
+				sw = true;
+			}else {
+				sw = false;
+			}
+			
+			request.setAttribute("sw", sw);
+			
+			/*
+			boolean n = true;
+			
+			//아이디가 중복되면 delete, 아니면 update
+			if (lDAO.likeListContainsUser(likeList, id)) {	
+				n = true;
+			} else {
+			    n = false;
+			}	
+			
+			request.setAttribute("n", n);
+			*/
 			
 			nextPage="/board/boardview.jsp";
 		}else if(command.equals("/deleteboard.do")) {
@@ -304,10 +384,10 @@ public class MainController extends HttpServlet {
 			
 			//모델 생성해서 뷰로 보내기
 			request.setAttribute("board", board);
-			
-			
+									
 			nextPage="/board/updateboardform.jsp";
 		}else if(command.equals("/updateboard.do")) {
+			/*
 			//게시글 제목, 내용을 파라미터로 받음
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			String title = request.getParameter("title");
@@ -320,6 +400,51 @@ public class MainController extends HttpServlet {
 			b.setBno(bno);
 			
 			bDAO.updateboard(b);
+			*/
+			//게시글 제목, 내용을 파라미터로 받음
+			
+			String realFolder = "C:\\jspworks\\members\\src\\main\\webapp\\upload";
+			int maxSize = 10*1024*1024; //10MB
+			String encType = "utf-8";	//파일 이름 한글 인코딩
+			DefaultFileRenamePolicy policy = new DefaultFileRenamePolicy();
+			
+			//5가지 인자
+			MultipartRequest multi = 
+					new MultipartRequest(request, realFolder, maxSize, 
+							encType, policy);
+			
+			//폼 데이터 받기
+			String title = multi.getParameter("title");
+			String content = multi.getParameter("content");
+			int bno = Integer.parseInt(multi.getParameter("bno"));
+			
+			//file 파라미터 추출
+			Enumeration<?> files = multi.getFileNames();
+			String filename = "";
+			while(files.hasMoreElements()) {	//파일 이름이 있는 동안 반복
+				String userFilename = (String) files.nextElement();
+				
+				//실제 저장될 이름
+				filename = multi.getFilesystemName(userFilename);		
+			}
+				
+			//db에 저장
+			Board b = new Board();
+			b.setTitle(title);
+			b.setContent(content);
+			b.setFilename(filename);
+			b.setBno(bno);
+			
+			//파일 유무에 따른 처리
+			if(filename != null) {	//파일이 있는 경우
+				bDAO.updateboard(b);
+			}else {				//파일이 없는 경우
+				bDAO.updateboardNoFile(b);
+			}
+			
+			
+			
+			
 		//검색 처리	
 		}/*else if(command.equals("/search.do")) {
 			
@@ -402,6 +527,23 @@ public class MainController extends HttpServlet {
 		if(command.equals("/like.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			String id = request.getParameter("id");
+			
+			Voter voter = new Voter();
+			voter.setBno(bno);
+			voter.setMid(id);
+			
+			//좋아요 저장 유무 체크
+			int result = vDAO.checkVoter(bno, id);
+			if(result == 0) {	//db에 없으면(저장 안됨
+				vDAO.insertVote(voter);	//좋아요 추가
+			}else {	//result == 1
+				vDAO.deleteVote(voter);	//좋아요 삭제
+			}
+			
+			
+			/*
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			String id = request.getParameter("id");
 			List<Blike> likeList = lDAO.getLikeList(bno);
 			
 			
@@ -416,6 +558,7 @@ public class MainController extends HttpServlet {
 			}	
 			lDAO.updateLikeCount(bno);
 			nextPage="boardview.do?bno=" + bno;
+			*/
 		}
 		
 
@@ -425,7 +568,7 @@ public class MainController extends HttpServlet {
 		//새로고침하면 게시글, 댓글 중복 생성 문제 해결
 		if(command.equals("/write.do") || command.equals("/updateboard.do")) { 
 			response.sendRedirect("boardlist.do");
-		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/updatereply.do")) {
+		} else if (command.equals("/insertreply.do") || command.equals("/deletereply.do") || command.equals("/updatereply.do") || command.equals("/like.do")) {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			response.sendRedirect("boardview.do?bno=" + bno);
 		}else{

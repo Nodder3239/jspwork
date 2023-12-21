@@ -52,13 +52,14 @@ public class BoardDAO {
 		conn = JDBCUtil.getConnection();
 		
 		try {
-			String sql = "INSERT INTO board(bno, title, content, id, filename) "
+			String sql = "INSERT INTO board(bno, title, content, filename, id) "
 					+ "VALUES (seq_bno.NEXTVAL, ?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, b.getTitle());
 			pstmt.setString(2, b.getContent());
-			pstmt.setString(3, b.getId());
-			pstmt.setString(4, b.getFilename());
+			pstmt.setString(3, b.getFilename());
+			pstmt.setString(4, b.getId());
+			
 
 			//sql 실행
 			pstmt.executeUpdate();
@@ -137,13 +138,14 @@ public class BoardDAO {
 			conn = JDBCUtil.getConnection();
 			//sql 처리 : 수정일 처리는 현재 날짜와 시간을 입력함
 			String sql = "UPDATE board SET title = ?"
-					+ ", content = ?, modifydate= ? WHERE bno = ?";
+					+ ", content = ?, filename = ?, modifydate= ? WHERE bno = ?";
 			pstmt = conn.prepareStatement(sql);
 			//폼에 입력된 데이터를 가져와서 db에 저장
 			pstmt.setString(1, b.getTitle());
 			pstmt.setString(2, b.getContent());
-			pstmt.setTimestamp(3, now);
-			pstmt.setInt(4, b.getBno());
+			pstmt.setString(3, b.getFilename());
+			pstmt.setTimestamp(4, now);
+			pstmt.setInt(5, b.getBno());
 
 			//sql 실행
 			pstmt.executeUpdate();
@@ -172,6 +174,34 @@ public class BoardDAO {
 			JDBCUtil.close(conn, pstmt);
 		}
 	}
+	
+	//파일이 없는 경우 - 게시글 수정
+	public void updateboardNoFile(Board b) {
+		//현재 날짜와 시간 객체 생성
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		try {
+			//db연결
+			conn = JDBCUtil.getConnection();
+			//sql 처리 : 수정일 처리는 현재 날짜와 시간을 입력함
+			String sql = "UPDATE board SET title = ?"
+					+ ", content = ?, modifydate= ? WHERE bno = ?";
+			pstmt = conn.prepareStatement(sql);
+			//폼에 입력된 데이터를 가져와서 db에 저장
+			pstmt.setString(1, b.getTitle());
+			pstmt.setString(2, b.getContent());
+			pstmt.setTimestamp(3, now);
+			pstmt.setInt(4, b.getBno());
+
+			//sql 실행
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {		//db종료
+			JDBCUtil.close(conn, pstmt);
+		}
+	}
+	
+
 	//검색 처리
 	/*
 	public List<Board> searchBoards(String field, String kw) {

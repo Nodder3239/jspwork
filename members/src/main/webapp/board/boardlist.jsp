@@ -155,7 +155,7 @@
 					<a href=""><i class="fa-solid fa-play"></i></a>
 					</c:otherwise>
 					</c:choose>
-					<a href=""><i class="fa-solid fa-forward"></i></a>	
+					<a href="/boardlist.do?pageNum=${endPage}"><i class="fa-solid fa-forward"></i></a>	
 				</div>
 				<form action="" method="get">
 					<div id="search">
