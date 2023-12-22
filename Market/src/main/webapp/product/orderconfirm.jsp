@@ -6,25 +6,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>장바구니</title>
-<link rel="stylesheet" href="../resources/css/style.css">
+<title>주문 내역</title>
 </head>
 <body>
 	<jsp:include page="../header.jsp" />
 	<div class="container my-3">
-	  <h2>장바구니</h2>
+	  <h2>주문 내역</h2>
 	  <div class="row my-3">
-	    <table>
-	    	<tr>
-	    		<td align="left">
-	    			<a href="/deletecart.do" class="btn btn-danger">삭제하기</a>
-	    		</td>
-	    		<td align="right">
-	    			<!-- 장바구니 주문이므로 카트아이디를 전달해줌 -->
-	    		    <a href="/shippingform.do?cartId=${cartId}" class="btn btn-success">주문하기</a>
-	    		</td>
-	    	</tr>
-	    </table>
+	  	<div class="col-4">
+	  		배송주소<br>
+	  		성명: ${shipping_sname}
+	  		우편번호: ${shipping_zipcode}<br>
+	  		주소: ${shipping_address}
+	  	</div>
+	  	<div class="col-8" align="right">
+	  		배송일: ${shipping_shippingdate }
+	  	</div>
 	    <!-- 장바구니 품목 -->
 	    <table class="table table-hover my-3 px-3">
 	    	<thead>
@@ -50,11 +47,14 @@
 	    	</tbody>
 	    	<tfoot>
 	    		<tr>
-	    			<td></td><td></td><td>총액</td><td><fmt:formatNumber value="${sum}"
+	    			<td></td><td></td><td>총액</td><td><fmt:formatNumber value="${sum }"
 							pattern="#,##0" /></td><td></td>
 	    		</tr>
 	    	</tfoot>
 	    </table>
+	  	<p align="right">
+	    <a href="/thankscustomer.do" class="btn btn-success">주문 완료</a>
+	  	</p>
 	  </div>
 	</div>
 	<jsp:include page="../footer.jsp" />
